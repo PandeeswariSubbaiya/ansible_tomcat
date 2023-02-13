@@ -1,0 +1,32 @@
+- hosts: all
+remote_user: ec2-user
+become: yes
+tasks:
+- name: downloading tomcat
+get_url:
+url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.22/bin/apache-tomcat-10.0.22.tar.gz
+dest: /opt
+- name: extracting tomcat
+unarchive:
+src: /opt/apache-tomcat-10.0.22.tar.gz
+dest: /opt
+remote_src: yes
+- name: downloading tomcat
+get_url:
+url: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+dest: /opt/apache-tomcat-10.0.22/webapps
+- name: fetching server.xml from remote to master
+fetch:
+src: /opt/apache-tomcat-10.0.22/conf/server.xml
+dest: /home/ec2-user/server.xml.j2
+flat: yes
+tags:
+- fetch
+- name: Template a file to /etc/file.conf
+template:
+src: /home/ec2-user/server.xml.j2
+dest: /opt/apache-tomcat-10.0.22/conf/server.xml
+- name: starting tomcat
+shell: nohup /opt/apache-tomcat-10.0.22/bin/shutdown.sh &
+- name: starting tomcat
+shell: nohup /opt/apache-tomcat-10.0.22/bin/startup.sh &
