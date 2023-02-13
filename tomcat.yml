@@ -11,6 +11,10 @@
   src: /opt/apache-tomcat-10.0.22.tar.gz
   dest: /opt
   remote_src: yes
+ - name: installing java
+       yum:
+       name: java-11-amazon-corretto
+       state: present
 - name: downloading tomcat
   get_url:
   url: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
